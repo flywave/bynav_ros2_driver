@@ -1,6 +1,6 @@
 #include <bynav_gps_driver/parsers/header.h>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 uint32_t bynav_gps_driver::HeaderParser::GetMessageId() const { return 0; }
 

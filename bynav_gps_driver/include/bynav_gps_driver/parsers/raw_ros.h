@@ -13,7 +13,7 @@
 #include <bynav_gps_msgs/GnssMeasMsg.h>
 #include <bynav_gps_msgs/GnssObsMsg.h>
 #include <bynav_gps_msgs/GnssTimeMsg.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <bynav_gps_driver/parsers/raw.h>
 

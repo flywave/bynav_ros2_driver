@@ -10,6 +10,8 @@
 #include <boost/accumulators/statistics/variance.hpp>
 #include <boost/circular_buffer.hpp>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <bynav_gps_driver/bynav_nmea.h>
 #include <bynav_gps_msgs/BynavConfig.h>
 #include <bynav_gps_msgs/BynavCorrectedImuData.h>
@@ -24,19 +26,15 @@
 #include <bynav_gps_msgs/Inspvax.h>
 #include <bynav_gps_msgs/Psrvel.h>
 #include <bynav_gps_msgs/Time.h>
+
 #include <diagnostic_msgs/msg/diagnostic_status.h>
 #include <diagnostic_updater/msg/diagnostic_updater.h>
 #include <diagnostic_updater/msg/publisher.h>
 #include <gps_msgs/msg/gps_fix.hpp>
-#include <nodelet/nodelet.h>
-#include <ros/ros.h>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
-#include <std_msgs/msg/time.hpp>
+#include <builtin_interfaces/msg/time.hpp>
 #include <swri_math_util/math_util.h>
-#include <swri_roscpp/parameters.h>
-#include <swri_roscpp/publisher.h>
-#include <swri_roscpp/subscriber.h>
 
 namespace stats = boost::accumulators;
 
@@ -214,7 +212,7 @@ public:
     NODELET_INFO("%s initialized", hw_id_.c_str());
   }
 
-  void SyncCallback(const std_msgs::TimeConstPtr &sync) {
+  void SyncCallback(const std::shared_ptr<builtin_interfaces::msg::Time> &sync) {
     boost::unique_lock<boost::mutex> lock(mutex_);
     sync_times_.push_back(sync->data);
   }
@@ -383,7 +381,7 @@ private:
 
   boost::mutex config_mutex_;
 
-  rclcpp::Subscription<std_msgs::TimeConstPtr>::SharedPtr sync_sub_;
+  rclcpp::Subscription<builtin_interfaces::msg::Time>::SharedPtr sync_sub_;
   rclcpp::Time last_sync_;
 
   boost::circular_buffer<rclcpp::Time> sync_times_;

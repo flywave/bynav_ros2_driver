@@ -9,7 +9,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/make_shared.hpp>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 namespace bynav_gps_driver {
 

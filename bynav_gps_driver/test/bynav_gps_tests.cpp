@@ -2,8 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include <ros/package.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 TEST(BynavGpsTestSuite, testGpsFixParsing) {
   bynav_gps_driver::BynavNmea gps;

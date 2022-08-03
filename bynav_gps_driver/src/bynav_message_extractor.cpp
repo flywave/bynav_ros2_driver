@@ -6,12 +6,11 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <bynav_gps_driver/parsers/gpgga.h>
 #include <bynav_gps_driver/parsers/gprmc.h>
 #include <bynav_gps_driver/parsers/header.h>
-#include <swri_string_util/string_util.h>
 
 namespace bynav_gps_driver {
 

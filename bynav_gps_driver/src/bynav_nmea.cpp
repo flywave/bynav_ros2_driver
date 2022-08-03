@@ -400,7 +400,7 @@ void BynavNmea::GetImuMessages(std::vector<sensor_msgs::msg::ImuPtr> &imu_messag
 void BynavNmea::GenerateImuMessages() {
   if (imu_rate_ <= 0.0) {
     ROS_WARN_ONCE("IMU rate has not been configured; cannot produce "
-                  "sensor_msgs/Imu messages.");
+                  "sensor_msgs/msg/imu messages.");
     return;
   }
 
@@ -467,7 +467,7 @@ void BynavNmea::GenerateImuMessages() {
   }
 
   size_t new_size = imu_msgs_.size() - previous_size;
-  ROS_DEBUG("Created %lu new sensor_msgs/Imu messages.", new_size);
+  ROS_DEBUG("Created %lu new sensor_msgs/msg/imu messages.", new_size);
 }
 
 void BynavNmea::SetImuRate(double imu_rate, bool imu_rate_forced) {

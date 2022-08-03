@@ -27,12 +27,12 @@
 #include <diagnostic_msgs/msg/diagnostic_status.h>
 #include <diagnostic_updater/msg/diagnostic_updater.h>
 #include <diagnostic_updater/msg/publisher.h>
-#include <gps_msgs/msg/gps_fix.h>
+#include <gps_msgs/msg/gps_fix.hpp>
 #include <nodelet/nodelet.h>
 #include <ros/ros.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <std_msgs/Time.h>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <std_msgs/msg/time.hpp>
 #include <swri_math_util/math_util.h>
 #include <swri_roscpp/parameters.h>
 #include <swri_roscpp/publisher.h>
@@ -384,11 +384,11 @@ private:
   boost::mutex config_mutex_;
 
   rclcpp::Subscription<std_msgs::TimeConstPtr>::SharedPtr sync_sub_;
-  ros::Time last_sync_;
+  rclcpp::Time last_sync_;
 
-  boost::circular_buffer<ros::Time> sync_times_;
+  boost::circular_buffer<rclcpp::Time> sync_times_;
 
-  boost::circular_buffer<ros::Time> msg_times_;
+  boost::circular_buffer<rclcpp::Time> msg_times_;
 
   stats::accumulator_set<float,
                          stats::stats<stats::tag::max, stats::tag::min,
@@ -409,7 +409,7 @@ private:
   int32_t gps_insufficient_data_warnings_;
   int32_t publish_rate_warnings_;
   int32_t measurement_count_;
-  ros::Time last_published_;
+  rclcpp::Time last_published_;
   bynav_gps_msgs::BynavPositionPtr last_bynav_position_;
 
   std::string imu_frame_id_;

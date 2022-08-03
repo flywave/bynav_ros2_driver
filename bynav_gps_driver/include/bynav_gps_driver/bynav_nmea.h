@@ -11,7 +11,7 @@
 
 #include <swri_serial_util/serial_port.h>
 
-#include <gps_msgs/msg/gps_fix.h>
+#include <gps_msgs/msg/gps_fix.hpp>
 
 #include <bynav_gps_msgs/BynavCorrectedImuData.h>
 #include <bynav_gps_msgs/BynavPosition.h>
@@ -50,7 +50,7 @@
 #include <bynav_gps_driver/parsers/rawimu.h>
 #include <bynav_gps_driver/parsers/rawimus.h>
 
-#include <sensor_msgs/Imu.h>
+#include <sensor_msgs/msg/imu.hpp>
 
 namespace bynav_gps_driver {
 

@@ -1,20 +1,24 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(bynav_gps_msgs)
 
-set(MSG_DEPS 
-  std_msgs)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  ${MSG_DEPS}
-)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-add_service_files(
-  FILES
+find_package(ament_cmake REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
+
+set(srv_files
   BynavFRESET.srv
 )
 
-add_message_files(DIRECTORY msg FILES
+set(msg_files
   Gpatr.msg
   Gpdop.msg
   Gpfpd.msg
@@ -71,7 +75,14 @@ add_message_files(DIRECTORY msg FILES
   GnssTimeMsg.msg
   WorkFREQS.msg
 )
-generate_messages(DEPENDENCIES ${MSG_DEPS})
-catkin_package(
-  CATKIN_DEPENDS message_runtime ${MSG_DEPS}
+
+rosidl_generate_interfaces( bynav_gps_msgs
+  ${msg_files}
+  ${srv_files}
+  DEPENDENCIES builtin_interfaces std_msgs
+  ADD_LINTER_TESTS
 )
+
+ament_export_dependencies(rosidl_default_runtime)
+
+ament_package()

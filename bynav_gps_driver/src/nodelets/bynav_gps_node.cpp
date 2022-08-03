@@ -27,22 +27,22 @@
 #include <bynav_gps_msgs/Psrvel.h>
 #include <bynav_gps_msgs/Time.h>
 
+#include <builtin_interfaces/msg/time.hpp>
 #include <diagnostic_msgs/msg/diagnostic_status.h>
 #include <diagnostic_updater/msg/diagnostic_updater.h>
 #include <diagnostic_updater/msg/publisher.h>
 #include <gps_msgs/msg/gps_fix.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/nav_sat_fix.hpp>
-#include <builtin_interfaces/msg/time.hpp>
 #include <swri_math_util/math_util.h>
 
 namespace stats = boost::accumulators;
 
 namespace bynav_gps_driver {
 
-class BynavGpsNodelet : public nodelet::Nodelet {
+class BynavGpsNode : public rclcpp::Node {
 public:
-  BynavGpsNodelet()
+  BynavGpsNode()
       : device_(""), connection_type_("serial"), serial_baud_(115200),
         polling_period_(0.05), publish_gpgsv_(false), publish_gphdt_(false),
         imu_rate_(100.0), imu_sample_rate_(-1), span_frame_to_ros_frame_(false),
@@ -62,7 +62,7 @@ public:
         measurement_count_(0), last_published_(ros::TIME_MIN),
         imu_frame_id_(""), frame_id_("") {}
 
-  ~BynavGpsNodelet() override { gps_.Disconnect(); }
+  ~BynavGpsNode() override { gps_.Disconnect(); }
 
   void onInit() override {
     ros::NodeHandle &node = getNodeHandle();
@@ -119,10 +119,10 @@ public:
                 publish_invalid_gpsfix_);
 
     reset_service_ =
-        priv.advertiseService("freset", &BynavGpsNodelet::resetService, this);
+        priv.advertiseService("freset", &BynavGpsNode::resetService, this);
 
-    sync_sub_ = swri::Subscriber(node, "gps_sync", 100,
-                                 &BynavGpsNodelet::SyncCallback, this);
+    sync_sub_ =
+        swri::Subscriber(node, "gps_sync", 100, &BynavGpsNode::SyncCallback, this);
 
     std::string gps_topic = node.resolveName("gps");
     gps_pub_ = swri::advertise<gps_msgs::msg::GPSFix>(node, gps_topic, 100);
@@ -194,25 +194,24 @@ public:
     hw_id_ = "Bynav GPS (" + device_ + ")";
     if (publish_diagnostics_) {
       diagnostic_updater_.setHardwareID(hw_id_);
-      diagnostic_updater_.add("Connection", this,
-                              &BynavGpsNodelet::DeviceDiagnostic);
-      diagnostic_updater_.add("Hardware", this,
-                              &BynavGpsNodelet::GpsDiagnostic);
-      diagnostic_updater_.add("Data", this, &BynavGpsNodelet::DataDiagnostic);
-      diagnostic_updater_.add("Rate", this, &BynavGpsNodelet::RateDiagnostic);
+      diagnostic_updater_.add("Connection", this, &BynavGpsNode::DeviceDiagnostic);
+      diagnostic_updater_.add("Hardware", this, &BynavGpsNode::GpsDiagnostic);
+      diagnostic_updater_.add("Data", this, &BynavGpsNode::DataDiagnostic);
+      diagnostic_updater_.add("Rate", this, &BynavGpsNode::RateDiagnostic);
       if (publish_sync_diagnostic_) {
-        diagnostic_updater_.add("Sync", this, &BynavGpsNodelet::SyncDiagnostic);
+        diagnostic_updater_.add("Sync", this, &BynavGpsNode::SyncDiagnostic);
       }
     }
 
-    bynav_config_sub_ = node.subscribe("bynav/config", 10u,
-                                       &BynavGpsNodelet::ConfigCallback, this);
+    bynav_config_sub_ =
+        node.subscribe("bynav/config", 10u, &BynavGpsNode::ConfigCallback, this);
 
-    thread_ = boost::thread(&BynavGpsNodelet::Spin, this);
+    thread_ = boost::thread(&BynavGpsNode::Spin, this);
     NODELET_INFO("%s initialized", hw_id_.c_str());
   }
 
-  void SyncCallback(const std::shared_ptr<builtin_interfaces::msg::Time> &sync) {
+  void
+  SyncCallback(const std::shared_ptr<builtin_interfaces::msg::Time> &sync) {
     boost::unique_lock<boost::mutex> lock(mutex_);
     sync_times_.push_back(sync->data);
   }
@@ -845,4 +844,4 @@ private:
 
 // Register nodelet plugin
 #include <swri_nodelet/class_list_macros.h>
-SWRI_NODELET_EXPORT_CLASS(bynav_gps_driver, BynavGpsNodelet)
+SWRI_NODELET_EXPORT_CLASS(bynav_gps_driver, BynavGpsNode)
